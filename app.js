@@ -6,6 +6,7 @@ var engines = require('consolidate');
 var path = require('path');
 
 server.listen(port);
+console.log("Lets have a listen on port "+ port + "...");
 
 app.enable('trust proxy');
 app.engine('html', engines.mustache);
