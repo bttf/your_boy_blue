@@ -3,6 +3,12 @@
   "version": "0.0.1",
   "description": "a world",
   "main": "js/app.js",
+  "dependencies": {
+    "express": "*",
+    "consolidate": "~0.9.1",
+    "path": "~0.4.9",
+    "mustache": "~0.7.2"
+  },
   "scripts": {
     "test": "test"
   },
@@ -11,9 +17,6 @@
     "url": "https://github.com/bttf/your_boy_blue.git"
   },
   "keywords": [
-    "your",
-    "boy",
-    "blue",
     "game",
     "html5",
     "javascript",
