@@ -1,11 +1,9 @@
 var game = require('../public/js/Game');
 
 describe('Game', function() {
-  it ('should return an object', function() {
-    expect(typeof game).not.toBe('undefined');
-  });
-  it('should have name set as freddie', function() {
+  it ('should have an init function', function() {
     var bar = new game();
-    expect(bar.name).toEqual('freddie');
+    expect(typeof bar.init).toBe('function');
   });
+
 });

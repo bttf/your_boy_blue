@@ -1,5 +1,6 @@
 var Game = function() {
-  this.name = "freddie";
-  this.band = "Queen";
+  this.init = function() {
+    console.log('debug: this is the init function');
+  };
 };
 module.exports = Game;
