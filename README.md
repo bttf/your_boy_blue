@@ -3,7 +3,8 @@ A game written in HTML5 and JavaScript.
 
 ## Steps
 1. npm install
-2. npm start
+2. npm test
+3. npm start
 
 ## License
 Copyright (C) 2013 bttf

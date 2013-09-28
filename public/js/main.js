@@ -21,8 +21,8 @@ var init_browser = function() {
 	body = document.getElementsByTagName("body")[0];
 	canvas = document.createElement("canvas");
 	canvas.id = "canvas";
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	canvas.width = window.innerWidth - 25;
+	canvas.height = window.innerHeight - 25;
 	context = canvas.getContext('2d');
 	body.appendChild(canvas);
 
@@ -51,7 +51,7 @@ var loop = function() {
 var render = function() {
 };
 
-var draw() = function() {
+var draw = function() {
 };
 
 var start = function() {
