@@ -1,4 +1,23 @@
+var worldly_objects = [];
+var you;
+
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function(/* function */ callback, /* DOMElement */ element){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
 var init = function() {
+  init_browser();
+  init_game();
+};
+
+var init_browser = function() {
 	body = document.getElementsByTagName("body")[0];
 	canvas = document.createElement("canvas");
 	canvas.id = "canvas";
@@ -9,6 +28,17 @@ var init = function() {
 
   horizon = (canvas.height / 2);
   center_axis = (canvas.width / 2);
+};
+
+var init_game = function() {
+  define_you();
+  define_world();
+};
+
+var define_you = function() {
+};
+
+var define_world = function() {
 };
 
 var loop = function() {

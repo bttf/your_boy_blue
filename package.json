@@ -1,0 +1,29 @@
+{
+  "name": "your_boy_blue",
+  "version": "0.0.1",
+  "description": "a world",
+  "main": "js/app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bttf/your_boy_blue.git"
+  },
+  "keywords": [
+    "your",
+    "boy",
+    "blue",
+    "game",
+    "html5",
+    "javascript",
+    "css",
+    "music",
+    "games"
+  ],
+  "author": "bttf",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/bttf/your_boy_blue/issues"
+  }
+}
