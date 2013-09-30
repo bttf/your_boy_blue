@@ -1,9 +1,11 @@
 var game = require('../public/js/Game');
 
 describe('Game', function() {
-  it ('should have an init function', function() {
-    var bar = new game();
-    expect(typeof bar.init).toBe('function');
-  });
+  describe('Game.init', function() {
+    it ('should have an init function', function() {
+      var bar = new game();
+      expect(typeof bar.init).toBe('function');
+    });
 
+  });
 });
