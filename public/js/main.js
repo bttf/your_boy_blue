@@ -1,5 +1,16 @@
-var worldly_objects = [];
-var you;
+var pixel_size = 16;
+var blocks = {};
+
+var mouse_x = null;
+var mouse_y = null;
+
+var offset_x = 0;
+var offset_y = 0;
+
+var r = 64,
+    g = 64,
+    b = 244,
+    a = 255;
 
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       || 
@@ -14,31 +25,93 @@ window.requestAnimFrame = (function(){
 
 var init = function() {
   init_browser();
-  init_game();
 };
 
 var init_browser = function() {
 	body = document.getElementsByTagName("body")[0];
 	canvas = document.createElement("canvas");
 	canvas.id = "canvas";
-	canvas.width = window.innerWidth - 25;
-	canvas.height = window.innerHeight - 25;
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight - 5;
 	context = canvas.getContext('2d');
 	body.appendChild(canvas);
 
+  add_event_listeners();
+
   horizon = (canvas.height / 2);
   center_axis = (canvas.width / 2);
+
+  // debugging
+  context.font = "16px Arial";
 };
 
-var init_game = function() {
-  define_you();
-  define_world();
+var add_event_listeners = function() {
+  body.addEventListener("keydown", key_down, false);
+  body.addEventListener("mousedown", mouse_down, false);
+  body.addEventListener("mouseup", mouse_up, false);
+  body.addEventListener("mousemove", mouse_move, false);
 };
 
-var define_you = function() {
+var key_down = function(e) {
+  var speed = pixel_size;
+
+  if (e.keyCode == 61) {
+    pixel_size++;
+  }
+  if (e.keyCode == 173) {
+    pixel_size--;
+  }
+  if (e.keyCode == 38) {
+    offset_y -= speed;
+  }
+  if (e.keyCode == 40) {
+    offset_y += speed;
+  }
+  if (e.keyCode == 39) {
+    offset_x += speed;
+  }
+  if (e.keyCode == 37) {
+    offset_x -= speed;
+  }
 };
 
-var define_world = function() {
+var mouse_down = function(e) {
+  mouse_x = e.pageX;
+  mouse_y = e.pageY;
+  add_block(mouse_x, mouse_y);
+};
+
+var mouse_up = function(e) {
+  mouse_x = null;
+  mouse_y = null;
+};
+
+var mouse_move = function(e) {
+  if (mouse_x && mouse_y) {
+    mouse_x = e.pageX;
+    mouse_y = e.pageY;
+    add_block(mouse_x, mouse_y);
+  }
+};
+
+var add_block = function(x, y) {
+  var row    = ((y - offset_y)  / pixel_size) | 0,
+      column = ((x - offset_x) / pixel_size) | 0;
+
+  var block = {
+    "col": column,
+    "row": row,
+    "r": r,
+    "g": g,
+    "b": b,
+    "a": a,
+  };
+
+  if (blocks[row] == null) {
+    blocks[row] = {};
+  }
+
+  blocks[row][column] = block;
 };
 
 var loop = function() {
@@ -52,6 +125,52 @@ var render = function() {
 };
 
 var draw = function() {
+  draw_grid();
+  draw_blocks();
+
+  context.fillText("pixel size: " + pixel_size, 10, 20);
+  if (mouse_x && mouse_y) {
+    context.fillText("mouse coords: " + mouse_x + ", " + mouse_y, 10, 40);
+  }
+};
+
+var draw_grid = function() {
+  var imageData = context.createImageData(pixel_size, pixel_size);
+  for (var i = 0; i < pixel_size; i++) {
+    setPixel(imageData, pixel_size - 1, i, 204, 204, 204, 255);
+  }
+  for (var i = 0; i < pixel_size; i++) {
+    setPixel(imageData, i, pixel_size - 1, 204, 204, 204, 255);
+  }
+
+  for (var i = 0; i < canvas.width; i += pixel_size) {
+    for (var j = 0; j < canvas.height; j += pixel_size) {
+      context.putImageData(imageData, i - (offset_x % pixel_size), j - (offset_y % pixel_size));
+    }
+  }
+};
+
+var draw_blocks = function() {
+  for (var row in blocks) {
+    for (var col in blocks[row]) {
+      var x = blocks[row][col]['col'] * pixel_size;
+      var y = blocks[row][col]['row'] * pixel_size;;
+      var r = blocks[row][col]['r'],
+          g = blocks[row][col]['g'],
+          b = blocks[row][col]['b'];
+
+      context.fillStyle = rgbToHex(r, g, b);
+      context.fillRect(x + offset_x, y + offset_y, pixel_size, pixel_size);
+    }
+  }
+};
+
+var setPixel = function(imageData, x, y, r, g, b, a) {
+  var index = (x + y * imageData.width) * 4;
+  imageData.data[ index + 0 ] = r;
+  imageData.data[ index + 1 ] = g;
+  imageData.data[ index + 2 ] = b;
+  imageData.data[ index + 3 ] = a;
 };
 
 var start = function() {
@@ -60,3 +179,8 @@ var start = function() {
 };
 
 window.onload = start;
+
+function rgbToHex(r, g, b) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
