@@ -1,13 +1,5 @@
 var pixel_size = 32;
 var blocks = {};
-var mouse_x = null;
-var mouse_y = null;
-var offset_x = 0;
-var offset_y = 0;
-var r = 64,
-    g = 64,
-    b = 244,
-    a = 255;
 
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       || 
@@ -27,6 +19,7 @@ var init = function() {
 };
 
 var init_browser = function() {
+  // console.log('debug: init_browser called');
 	body = document.getElementsByTagName("body")[0];
 	canvas = document.createElement("canvas");
 	canvas.id = "canvas";
@@ -45,78 +38,10 @@ var init_browser = function() {
 };
 
 var add_event_listeners = function() {
-  body.addEventListener("keydown", key_down, false);
-  body.addEventListener("mousedown", mouse_down, false);
-  body.addEventListener("mouseup", mouse_up, false);
-  body.addEventListener("mousemove", mouse_move, false);
-
-};
-
-var key_down = function(e) {
-  var speed = pixel_size;
-
-  if (e.keyCode == 61) {
-    pixel_size++;
-  }
-  if (e.keyCode == 173) {
-    pixel_size--;
-  }
-  if (e.keyCode == 38) {
-    offset_y -= speed;
-  }
-  if (e.keyCode == 40) {
-    offset_y += speed;
-  }
-  if (e.keyCode == 39) {
-    offset_x += speed;
-  }
-  if (e.keyCode == 37) {
-    offset_x -= speed;
-  }
-
-};
-
-var mouse_down = function(e) {
-  mouse_x = e.pageX;
-  mouse_y = e.pageY;
-  add_block(mouse_x, mouse_y);
-
-};
-
-var mouse_up = function(e) {
-  mouse_x = null;
-  mouse_y = null;
-
-};
-
-var mouse_move = function(e) {
-  if (mouse_x && mouse_y) {
-    mouse_x = e.pageX;
-    mouse_y = e.pageY;
-    add_block(mouse_x, mouse_y);
-
-  }
-
-};
-
-var add_block = function(x, y) {
-  var row    = ((y - offset_y)  / pixel_size) | 0,
-      column = ((x - offset_x) / pixel_size) | 0;
-
-  var block = {
-    "col": column,
-    "row": row,
-    "r": r,
-    "g": g,
-    "b": b,
-    "a": a,
-  };
-
-  if (blocks[row] == null) {
-    blocks[row] = {};
-  }
-
-  blocks[row][column] = block;
+  // body.addEventListener("keydown", key_down, false);
+  // body.addEventListener("mousedown", mouse_down, false);
+  // body.addEventListener("mouseup", mouse_up, false);
+  // body.addEventListener("mousemove", mouse_move, false);
 
 };
 
@@ -129,58 +54,30 @@ var loop = function() {
 };
 
 var render = function() {
+  // console.log('debug: entering render');
 };
 
 var draw = function() {
-  draw_grid();
-  draw_blocks();
-
-  context.fillText("pixel size: " + pixel_size, 10, 20);
-
-  if (mouse_x && mouse_y) {
-    context.fillText("mouse coords: " + mouse_x + ", " + mouse_y, 10, 40);
-  }
+  // console.log('debug: entering draw');
+  draw_map(); // draw_blocks();
 
 };
 
-var draw_grid = function() {
-  context.lineWidth = 0.1;
-
-  for (var i=0; i < canvas.height; i += pixel_size) {
-    var x = 0,
-      y = i;
-
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(canvas.width, y);
-    context.stroke();
-
-  }
-
-  for (var i=0; i < canvas.width; i += pixel_size) {
-    var x = i,
-      y = 0;
-
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(x, canvas.height);
-    context.stroke();
-
-  }
-
-};
-
-var draw_blocks = function() {
+var draw_map = function() {
+  // console.log('debug: entering draw_map');
+  // console.log('debug: blocks: ' + blocks);
   for (var row in blocks) {
     for (var col in blocks[row]) {
+      // console.log('debug: x y z r g b about to get set ...');
       var x = blocks[row][col]['col'] * pixel_size;
       var y = blocks[row][col]['row'] * pixel_size;
       var r = blocks[row][col]['r'],
           g = blocks[row][col]['g'],
           b = blocks[row][col]['b'];
 
+      // console.log('debug: fillStyle and fillRect about to happen ...');
       context.fillStyle = rgbToHex(r, g, b);
-      context.fillRect(x + offset_x, y + offset_y, pixel_size, pixel_size);
+      context.fillRect(x, y, pixel_size, pixel_size);
 
     }
 
@@ -188,26 +85,21 @@ var draw_blocks = function() {
 
 };
 
-var setPixel = function(imageData, x, y, r, g, b, a) {
-  var index = (x + y * imageData.width) * 4;
+function rgbToHex(r, g, b) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 
-  imageData.data[ index + 0 ] = r;
-  imageData.data[ index + 1 ] = g;
-  imageData.data[ index + 2 ] = b;
-  imageData.data[ index + 3 ] = a;
-
-};
+}
 
 var start = function() {
   init();
   loop();
 
+  $.getJSON('js/map1.json', function(response) {
+    blocks = JSON.parse(response);
+    console.log('debug: map loaded');
+  })
+
 };
-
-function rgbToHex(r, g, b) {
-  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-
-}
 
 window.onload = start;
 
