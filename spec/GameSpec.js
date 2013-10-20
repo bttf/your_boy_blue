@@ -1,4 +1,4 @@
-var game = require('../public/js/Game');
+var game = require('../public/js/game');
 
 describe('Game', function() {
   describe('Game.init', function() {

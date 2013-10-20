@@ -166,7 +166,7 @@ var draw_grid = function() {
 var draw_blocks = function() {
   var sizes = [];
   for (var size in blocks) {
-    sizes.push(size);
+    sizes.push(parseInt(size));
   }
   sizes.sort();
   sizes.reverse();
