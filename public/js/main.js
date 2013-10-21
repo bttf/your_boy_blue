@@ -1,3 +1,8 @@
+var g;
+require(['js/game'], function(game) {
+  g = new Game();
+});
+
 var pixel_size = 32;
 var blocks = {};
 var boat = {};
@@ -123,8 +128,8 @@ var loop = function() {
 };
 
 var draw = function() {
-  // console.log('debug: entering draw');
-  draw_map(); // draw_blocks();
+  // draw_map();
+  g.draw(blocks);
   draw_boat();
 
 };
