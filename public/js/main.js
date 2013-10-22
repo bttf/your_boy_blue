@@ -3,6 +3,8 @@ require(['js/game'], function(game) {
   g = new Game();
 });
 
+var audio_loop = new SeamlessLoop();
+
 var pixel_size = 32;
 var blocks = {};
 var boat = {};
@@ -151,11 +153,16 @@ var load_map = function(path) {
 var load_boat = function(path) {
   $.getJSON(path, function(response) {
     boat = JSON.parse(response);
-    boat_idling.play();
+    audio_loop.addUri('audio/boat_idling.ogg', 230, "boat_idling");
+    audio_loop.callback(sound_loaded("boat_idling"));
     console.log('debug: ' + path + ' loaded');
 
   })
 
+};
+
+var sound_loaded = function(uri) {
+  audio_loop.start(uri);
 };
 
 function rgbToHex(r, g, b) {
