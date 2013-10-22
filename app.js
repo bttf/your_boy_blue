@@ -19,9 +19,9 @@ app.use(function(err, req, res, next) {
 });
 
 app.get('/', function(req, res) {
-  res.render('index');
+  res.render('index', { script: 'js/main.js' });
 });
 
 app.get('/map-maker', function(req, res) {
-  res.render('map_maker');
+  res.render('index', { script: 'js/map_maker.js' });
 });
