@@ -3,7 +3,9 @@ var Game = function() {
     console.log('debug: this is the init function for Game');
   };
 
-  this.draw = function(blocks) {
+  this.draw = function(blocks, offset_x, offset_y) {
+    offset_x = typeof offset_x !== 'undefined' ? offset_x : 0;
+    offset_y = typeof offset_y !== 'undefined' ? offset_y : 0;
     var sizes = [];
     for (var size in blocks) {
       sizes.push(size);
@@ -21,7 +23,7 @@ var Game = function() {
               g = blocks[size][row][col]['g'],
               b = blocks[size][row][col]['b'];
           context.fillStyle = rgbToHex(r, g, b);
-          context.fillRect(x, y, pixel_size, pixel_size);
+          context.fillRect(x + offset_x, y + offset_y, pixel_size, pixel_size);
         }
 
       }

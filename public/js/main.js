@@ -96,14 +96,20 @@ var key_up = function(e) {
       break;
 
   }
-  // console.log('debug: keyup, movement = ' + movement);
 
 };
 
 var loop = function() {
   requestAnimFrame(loop);
 	context.clearRect(0, 0, canvas.width, canvas.height);
-  if (counter % 10 == 0) {
+  render();
+  draw();
+  counter++;
+
+};
+
+var render = function() {
+  if (counter % 20 == 0) {
     switch (movement) {
       case "up":
         boat_y -= pixel_size;
@@ -122,71 +128,13 @@ var loop = function() {
     counter = 0;
 
   }
-  draw();
-  counter++;
 
 };
 
 var draw = function() {
-  // draw_map();
   g.draw(blocks);
-  draw_boat();
+  g.draw(boat, boat_x, boat_y);
 
-};
-
-var draw_map = function() {
-  // console.log('debug: entering draw_map');
-  // console.log('debug: blocks: ' + blocks);
-  var sizes = [];
-  for (var size in blocks) {
-    sizes.push(size);
-  }
-  sizes.sort();
-  sizes.reverse();
-  for (var i = 0; i < sizes.length; i++) {
-    var size = sizes[i];
-    for (var row in blocks[size]) {
-      for (var col in blocks[size][row]) {
-        var pixel_size = blocks[size][row][col]['pixel_size'] || window.pixel_size;
-        var x = blocks[size][row][col]['col'] * pixel_size;
-        var y = blocks[size][row][col]['row'] * pixel_size;
-        var r = blocks[size][row][col]['r'],
-            g = blocks[size][row][col]['g'],
-            b = blocks[size][row][col]['b'];
-        context.fillStyle = rgbToHex(r, g, b);
-        context.fillRect(x, y, pixel_size, pixel_size);
-      }
-
-    }
-
-  }
-
-};
-
-var draw_boat = function() {
-  var sizes = [];
-  for (var size in boat) {
-    sizes.push(size);
-  }
-  sizes.sort();
-  sizes.reverse();
-  for (var i = 0; i < sizes.length; i++) {
-    var size = sizes[i];
-    for (var row in boat[size]) {
-      for (var col in boat[size][row]) {
-        var pixel_size = boat[size][row][col]['pixel_size'] || window.pixel_size;
-        var x = boat[size][row][col]['col'] * pixel_size;
-        var y = boat[size][row][col]['row'] * pixel_size;
-        var r = boat[size][row][col]['r'],
-            g = boat[size][row][col]['g'],
-            b = boat[size][row][col]['b'];
-        context.fillStyle = rgbToHex(r, g, b);
-        context.fillRect(x + boat_x, y + boat_y, pixel_size, pixel_size);
-      }
-
-    }
-
-  }
 };
 
 var load_map = function(path) {
