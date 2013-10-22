@@ -11,6 +11,7 @@ var boat_x = 0,
 var speed = 5;
 var movement = "still";
 var counter = 0;
+var boat_idling = new Audio('audio/boat_idling.ogg');
 
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       || 
@@ -52,6 +53,7 @@ var init_browser = function() {
 var init_game = function() {
   load_map('js/map1.json');
   load_boat('js/boat.json');
+  boat_idling.loop = true;
 
 };
 
@@ -149,6 +151,7 @@ var load_map = function(path) {
 var load_boat = function(path) {
   $.getJSON(path, function(response) {
     boat = JSON.parse(response);
+    boat_idling.play();
     console.log('debug: ' + path + ' loaded');
 
   })
