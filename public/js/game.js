@@ -1,8 +1,4 @@
 var Game = function() {
-  this.init = function() {
-    console.log('debug: this is the init function for Game');
-  };
-
   this.draw = function(blocks, offset_x, offset_y) {
     offset_x = typeof offset_x !== 'undefined' ? offset_x : 0;
     offset_y = typeof offset_y !== 'undefined' ? offset_y : 0;
@@ -31,5 +27,11 @@ var Game = function() {
     }
 
   };
+
+  this.drawImage = function(img, x, y) {
+      context.drawImage(img, x, y);
+
+  };
+
 };
 // module.exports = Game;

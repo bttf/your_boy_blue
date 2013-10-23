@@ -8,7 +8,8 @@
     "consolidate": "~0.9.1",
     "path": "~0.4.9",
     "mustache": "~0.7.2",
-    "jasmine-node": "~1.11.0"
+    "jasmine-node": "~1.11.0",
+    "requirejs": "~2.1.9"
   },
   "scripts": {
     "start": "node app.js",

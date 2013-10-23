@@ -1,6 +1,10 @@
 var g;
+var hud;
 require(['js/game'], function(game) {
   g = new Game();
+});
+require(['js/hud'], function(game) {
+  hud = new HUD();
 });
 
 var audio_loop = new SeamlessLoop();
@@ -14,6 +18,7 @@ var speed = 5;
 var movement = "still";
 var counter = 0;
 var boat_idling = new Audio('audio/boat_idling.ogg');
+var engine_status = true;
 
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       || 
@@ -56,6 +61,7 @@ var init_game = function() {
   load_map('js/map1.json');
   load_boat('js/boat.json');
   boat_idling.loop = true;
+  hud.init();
 
 };
 
@@ -64,9 +70,35 @@ var add_event_listeners = function() {
   body.addEventListener("keyup", key_up, false);
   // body.addEventListener("keypress", key_press, false);
 
-  // body.addEventListener("mousedown", mouse_down, false);
+  body.addEventListener("mousedown", mouse_down, false);
   // body.addEventListener("mouseup", mouse_up, false);
   // body.addEventListener("mousemove", mouse_move, false);
+
+};
+
+var mouse_down = function(e) {
+  console.log('debug: mouse_down');
+  var x = hud.audio_toggle.x(hud.audio_toggle.img),
+      y = hud.audio_toggle.y(hud.audio_toggle.img);
+  console.log('debug: mouse_down, x = ' + x + ', y = ' + y );
+  console.log('debug: audio width: ' + hud.audio_toggle.img.width);
+  console.log('debug: mouse_down, screenX = ' + e.screenX + ', screenY = ' + e.screenY);
+  if (e.clientX >= x &&
+      e.clientX <= x + hud.audio_toggle.img.width &&
+      e.clientY >= y &&
+      e.clientY <= y + hud.audio_toggle.img.height) {
+        console.log('debug: mouse_down, is within');
+        if (!engine_status) {
+          audio_loop.start("");
+        }
+        else {
+          audio_loop.stop();
+        }
+        engine_status = !engine_status
+  }
+};
+
+var is_within = function(img, x, y) {
 
 };
 
@@ -86,7 +118,6 @@ var key_down = function(e) {
       break;
 
   }
-  // console.log('debug: movement = ' + movement);
 
 };
 
@@ -138,7 +169,7 @@ var render = function() {
 var draw = function() {
   g.draw(blocks);
   g.draw(boat, boat_x, boat_y);
-
+  g.drawImage(hud.audio_toggle.img, hud.audio_toggle.x(hud.audio_toggle.img), hud.audio_toggle.y(hud.audio_toggle.img));
 };
 
 var load_map = function(path) {
@@ -153,7 +184,7 @@ var load_map = function(path) {
 var load_boat = function(path) {
   $.getJSON(path, function(response) {
     boat = JSON.parse(response);
-    audio_loop.addUri('audio/boat_idling.ogg', 230, "boat_idling");
+    audio_loop.addUri('audio/boat_idling.ogg', 215, "boat_idling");
     audio_loop.callback(sound_loaded("boat_idling"));
     console.log('debug: ' + path + ' loaded');
 
