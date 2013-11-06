@@ -18,7 +18,7 @@ var speed = 5;
 var movement = "still";
 var counter = 0;
 var boat_idling = new Audio('audio/boat_idling.ogg');
-var engine_status = true;
+var engine_status = "on";
 
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       || 
@@ -60,7 +60,6 @@ var init_browser = function() {
 var init_game = function() {
   load_map('js/map1.json');
   load_boat('js/boat.json');
-  boat_idling.loop = true;
   hud.init();
 
 };
@@ -88,13 +87,15 @@ var mouse_down = function(e) {
       e.clientY >= y &&
       e.clientY <= y + hud.audio_toggle.img.height) {
         console.log('debug: mouse_down, is within');
-        if (!engine_status) {
+        if (engine_status == "off") {
           audio_loop.start("");
+          engine_status = "on";
         }
         else {
           audio_loop.stop();
+          engine_status = "off";
         }
-        engine_status = !engine_status
+        // engine_status = !engine_status
   }
 };
 
@@ -106,19 +107,32 @@ var key_down = function(e) {
   switch(e.keyCode) {
     case 38:
       movement = "up";
+      play_boat_moving_audio();
       break;
     case 40:
       movement = "down";
+      play_boat_moving_audio();
       break;
     case 37:
       movement = "left";
+      play_boat_moving_audio();
       break;
     case 39:
       movement = "right";
+      play_boat_moving_audio();
       break;
 
   }
 
+};
+
+var play_boat_moving_audio = function() {
+  if (engine_status !== "moving") {
+    console.log('debug: should only be here once');
+    audio_loop.stop();
+    audio_loop.start("boat_moving");
+    engine_status = "moving";
+  }
 };
 
 var key_up = function(e) {
@@ -128,6 +142,11 @@ var key_up = function(e) {
     case 37:
     case 39:
       movement = "still";
+      if (engine_status === "moving") {
+        audio_loop.stop();
+        audio_loop.start("boat_idling");
+        engine_status = "idling";
+      }
       break;
 
   }
@@ -185,6 +204,7 @@ var load_boat = function(path) {
   $.getJSON(path, function(response) {
     boat = JSON.parse(response);
     audio_loop.addUri('audio/boat_idling.ogg', 215, "boat_idling");
+    audio_loop.addUri('audio/boat_moving.ogg', 155, "boat_moving");
     audio_loop.callback(sound_loaded("boat_idling"));
     console.log('debug: ' + path + ' loaded');
 
