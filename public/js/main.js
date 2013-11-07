@@ -147,6 +147,7 @@ var key_up = function(e) {
         audio_loop.start("boat_idling");
         engine_status = "idling";
       }
+      counter = 0;
       break;
 
   }
