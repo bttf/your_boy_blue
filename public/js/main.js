@@ -17,7 +17,18 @@ var boat_x = 0,
 var speed = 5;
 var movement = "still";
 var counter = 0;
-var boat_idling = new Audio('audio/boat_idling.ogg');
+// var boat_idling = new Audio('audio/boat_idling.ogg');
+var boat_revving = new Audio('audio/boat_revving.ogg');
+boat_revving.preload = "auto";
+var boat_halting = new Audio('audio/boat_halting.ogg');
+boat_halting.preload = "auto";
+var boat_starting = new Audio('audio/boat_starting.ogg');
+boat_starting.preload = "auto";
+var boat_kill = new Audio('audio/boat_kill.ogg');
+boat_kill.preload = "auto";
+var nature = new Audio('audio/nature.ogg');
+nature.preload = "auto";
+nature.loop = true;
 var engine_status = "on";
 
 window.requestAnimFrame = (function(){
@@ -88,11 +99,13 @@ var mouse_down = function(e) {
       e.clientY <= y + hud.audio_toggle.img.height) {
         console.log('debug: mouse_down, is within');
         if (engine_status == "off") {
-          audio_loop.start("");
+          boat_starting.play();
+          setTimeout(function() { audio_loop.start("boat_idling") }, 500);
           engine_status = "on";
         }
         else {
-          audio_loop.stop();
+          boat_kill.play();
+          audio_loop.stop("boat_idling");
           engine_status = "off";
         }
         // engine_status = !engine_status
@@ -104,23 +117,26 @@ var is_within = function(img, x, y) {
 };
 
 var key_down = function(e) {
-  switch(e.keyCode) {
-    case 38:
-      movement = "up";
-      play_boat_moving_audio();
-      break;
-    case 40:
-      movement = "down";
-      play_boat_moving_audio();
-      break;
-    case 37:
-      movement = "left";
-      play_boat_moving_audio();
-      break;
-    case 39:
-      movement = "right";
-      play_boat_moving_audio();
-      break;
+  if (engine_status !== "off") {
+    switch(e.keyCode) {
+      case 38:
+        movement = "up";
+        play_boat_moving_audio();
+        break;
+      case 40:
+        movement = "down";
+        play_boat_moving_audio();
+        break;
+      case 37:
+        movement = "left";
+        play_boat_moving_audio();
+        break;
+      case 39:
+        movement = "right";
+        play_boat_moving_audio();
+        break;
+
+    }
 
   }
 
@@ -129,8 +145,10 @@ var key_down = function(e) {
 var play_boat_moving_audio = function() {
   if (engine_status !== "moving") {
     console.log('debug: should only be here once');
-    audio_loop.stop();
-    audio_loop.start("boat_moving");
+    boat_revving.play();
+    audio_loop.stop("boat_idling");
+    setTimeout(function() { audio_loop.start("boat_moving") }, 600);
+    // audio_loop.start("boat_moving");
     engine_status = "moving";
   }
 };
@@ -143,8 +161,9 @@ var key_up = function(e) {
     case 39:
       movement = "still";
       if (engine_status === "moving") {
-        audio_loop.stop();
-        audio_loop.start("boat_idling");
+        boat_halting.play();
+        setTimeout(function() { audio_loop.stop("boat_moving") }, 120);
+        setTimeout(function() { audio_loop.start("boat_idling") }, 1000);
         engine_status = "idling";
       }
       counter = 0;
@@ -156,7 +175,7 @@ var key_up = function(e) {
 
 var loop = function() {
   requestAnimFrame(loop);
-	context.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
   render();
   draw();
   counter++;
@@ -204,8 +223,8 @@ var load_map = function(path) {
 var load_boat = function(path) {
   $.getJSON(path, function(response) {
     boat = JSON.parse(response);
-    audio_loop.addUri('audio/boat_idling.ogg', 215, "boat_idling");
-    audio_loop.addUri('audio/boat_moving.ogg', 155, "boat_moving");
+    audio_loop.addUri('audio/boat_idling.ogg', 780, "boat_idling");
+    audio_loop.addUri('audio/boat_moving.ogg', 2030, "boat_moving");
     audio_loop.callback(sound_loaded("boat_idling"));
     console.log('debug: ' + path + ' loaded');
 
@@ -215,6 +234,7 @@ var load_boat = function(path) {
 
 var sound_loaded = function(uri) {
   audio_loop.start(uri);
+  nature.play();
 };
 
 function rgbToHex(r, g, b) {
